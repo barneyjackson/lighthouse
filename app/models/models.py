@@ -1,4 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+import datetime
+
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
+from sqlalchemy import create_engine
+from sqlalchemy import text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -8,10 +12,10 @@ class QuestionAnswer(Base):
     __tablename__ = "questionanswers"
 
     id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime, default=datetime.datetime.now)
 
     question = Column(String)
     answer = Column(String)
-    created_at = Column(DateTime, server_default=text("sysdate"))
 
 class PendingQuestion(Base):
     __tablename__ = "pendingquestions"
@@ -19,5 +23,5 @@ class PendingQuestion(Base):
     id = Column(Integer, primary_key=True)
 
     question_answer_id = Column(Integer, ForeignKey("questionanswers.id"))
-    created_at = Column(DateTime, server_default=text("sysdate"))
-
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    answered = Column(Boolean, default=False)
