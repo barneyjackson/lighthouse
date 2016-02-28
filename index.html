@@ -144,10 +144,29 @@
         });
       },
 
-      handleSubmit: function(updatedMenu) {
+      handleCallback: function(updatedMenu) {
+        console.log("new menu")
         console.log(updatedMenu)
-        // callback chain of state!!
-        // magically do everything!
+        this.setState({menu: updatedMenu})
+      },
+
+      handleSubmit: function(updatedMenu) {
+        console.log("doing put request: ")
+        console.log(this.state.menu)
+        $.ajax({
+          url: 'http://localhost:5000/menu',
+          contentType: "application/json; charset=utf-8",
+          type: 'PUT',
+          dataType: 'json',
+          data: JSON.stringify(this.state.menu),
+          //data: this.state.menu,
+          success: function(data) {
+            console.log("success");
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.log("error!")
+          }
+        });
       },
 
       render: function() {
@@ -173,7 +192,7 @@
           {
             menu && (
               <div>
-              <MenuComponent menu={menu} callback={this.handleSubmit}/>
+              <MenuComponent menu={menu} callback={this.handleCallback}/>
               <button className="btn btn-primary" onClick={this.handleSubmit}>submit dude</button>
               </div>
             )
