@@ -5,12 +5,84 @@ from flask.ext import shelve
 from menu import Menu
 
 import json
-import ast
 
 app = Flask(__name__)
 app.config['SHELVE_FILENAME'] = 'shelve.db'
 shelve.init_app(app)
 
+initial_script = {
+  "description": "",
+  "children": [
+    {
+      "description": "0 - Food",
+      "children": [
+        {
+          "description": "0 - Merchants Accepting Food Vouchers",
+          "children": [
+            {
+              "description": 'This is the answer for Merchants Accepting Food Vouchers!',
+              "children": []
+            }
+          ]
+        },
+        {
+          "description": "1 - Food Voucher Eligibility and Process",
+          "children": [
+            {
+              "description": 'This is the answer for Food Voucher Eligibility and Process!',
+              "children": []
+            }
+          ]
+        },
+        {
+          "description": "2 - Employment in Food Industry",
+          "children": [
+            {
+              "description": 'This is the answer for Employment in Food Industry!',
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "1 - Shelter",
+      "children": [
+        {
+          "description": 'This is the answer for Shelter!',
+          "children": []
+        }
+      ]
+    },
+    {
+      "description": "2 - Transportation",
+      "children": [
+        {
+          "description": 'This is the answer for Transportation!',
+          "children": []
+        }
+      ]
+    },
+    {
+      "description": "3 - Border",
+      "children": [
+        {
+          "description": 'This is the answer for Border!',
+          "children": []
+        }
+      ]
+    },
+    {
+      "description": "4 - Registration & Legal Documents",
+      "children": [
+        {
+          "description": 'These are the Registration & Legal Documents!',
+          "children": []
+        }
+      ]
+    }
+  ]
+}
 
 @app.route('/menu', methods=["GET", "PUT"])
 def hello_world():
@@ -34,18 +106,9 @@ def hello_world():
 
 @app.route('/', methods=["GET"])
 def serve_index():
-    '''
-    db = shelve.get_shelve()
-    db['1'] = Menu({
-        "description": "Some Meta Text",
-        "children": [
-            {"description": "Get info about food.", "children": [{"description": "More Food Info"}]},
-            {"description": "Get info about housing.", "children": []},
-            {"description": "What's the name of this camp.", "answer": "Zaatari"}
-        ]
-    })
-    '''
-    return send_from_directory('.', 'index.html')
+  db = shelve.get_shelve()
+  #db['1'] = Menu(initial_script)
+  return send_from_directory('.', 'index.html')
 
 if __name__ == '__main__':
   app.run(debug=True)
