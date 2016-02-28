@@ -11,33 +11,41 @@ app.config['SHELVE_FILENAME'] = 'shelve.db'
 shelve.init_app(app)
 
 initial_script = {
+  "id": "b3db002c",
   "description": "",
   "children": [
     {
-      "description": "0 - Food",
+      "id": "0d832351",
+      "description": "Food",
       "children": [
         {
-          "description": "0 - Merchants Accepting Food Vouchers",
+          "id": "8c1cb0b3",
+          "description": "Merchants Accepting Food Vouchers",
           "children": [
             {
+              "id": "19a90842",
               "description": 'This is the answer for Merchants Accepting Food Vouchers!',
               "children": []
             }
           ]
         },
         {
-          "description": "1 - Food Voucher Eligibility and Process",
+          "id": "ac6cc8df",
+          "description": "Food Voucher Eligibility and Process",
           "children": [
             {
+              "id": "601c1784",
               "description": 'This is the answer for Food Voucher Eligibility and Process!',
               "children": []
             }
           ]
         },
         {
-          "description": "2 - Employment in Food Industry",
+          "id": "16f22006",
+          "description": "Employment in Food Industry",
           "children": [
             {
+              "id": "bb1743c5",
               "description": 'This is the answer for Employment in Food Industry!',
               "children": []
             }
@@ -46,36 +54,44 @@ initial_script = {
       ]
     },
     {
-      "description": "1 - Shelter",
+      "id": "3434d327",
+      "description": "Shelter",
       "children": [
         {
+          "id": "1f853337",
           "description": 'This is the answer for Shelter!',
           "children": []
         }
       ]
     },
     {
-      "description": "2 - Transportation",
+      "id": "417a9367",
+      "description": "Transportation",
       "children": [
         {
+          "id": "1967b7d4",
           "description": 'This is the answer for Transportation!',
           "children": []
         }
       ]
     },
     {
-      "description": "3 - Border",
+      "id": "27322478",
+      "description": "Border",
       "children": [
         {
+          "id": "68f2b6b4",
           "description": 'This is the answer for Border!',
           "children": []
         }
       ]
     },
     {
-      "description": "4 - Registration & Legal Documents",
+      "id": "ccb1e1ce",
+      "description": "Registration & Legal Documents",
       "children": [
         {
+          "id": "36fe07f2",
           "description": 'These are the Registration & Legal Documents!',
           "children": []
         }
@@ -106,9 +122,14 @@ def hello_world():
 
 @app.route('/', methods=["GET"])
 def serve_index():
+  valid, errors = Menu(initial_script).validate()
   db = shelve.get_shelve()
-  #db['1'] = Menu(initial_script)
-  return send_from_directory('.', 'index.html')
+  if valid:
+      #db['1'] = Menu(initial_script)
+      return send_from_directory('.', 'index.html')
+  else:
+    raise Exception("test data not valid")
+
 
 if __name__ == '__main__':
   app.run(debug=True)
