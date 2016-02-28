@@ -88,11 +88,22 @@
         this.state.callback(this.state.menu)
       },
 
-      handleNewThing: function() {
+      handleCreateNewChildMenu: function() {
         const currentMenuChildren = this.state.menu.children
         const updatedMenu = Object.assign(this.state.menu)
         // TODO(parth): need children:[] or no
-        currentMenuChildren.push({"description": "Default Description"})
+        currentMenuChildren.push({"description": "Default Description", "children": [{"description": "This is an answer", "children": []}]})
+        updatedMenu.children = currentMenuChildren
+        // update our menu, then update our parents
+        this.setState({menu: updatedMenu})
+        this.state.callback(this.state.menu)
+      },
+
+      convertToMenu: function() {
+        const currentMenuChildren = this.state.menu.children
+        const updatedMenu = Object.assign(this.state.menu)
+        // TODO(parth): need children:[] or no
+        currentMenuChildren.push({"description": "Answer", "children": []})
         updatedMenu.children = currentMenuChildren
         // update our menu, then update our parents
         this.setState({menu: updatedMenu})
@@ -105,17 +116,31 @@
         var stack = this.state.stack;
         var handleStateChange = this.handleStateChange;
         var isTopLevel = this.props.isTopLevel;
+
+        // There are a few situations we can find ourselves in:
+        // 1) You have no children, therefore you are a leaf node.
+        // 2) You have 1 child, which means that you are a terminal menu.
+        // 3) You have 2 children, which means theres a menu below this.
         return (
           <ol>
-            {!isTopLevel && <li><input className="form-control" type="text" onChange={this.handleChange} value={menu.description} /></li> }
+            {/* If we're not the top-most, then render the description. (hack since top-level one is not that great.) */}
+            <div className="row">
+              { !isTopLevel && <div className="col-md-9"><li><input className="form-control" type="text" onChange={this.handleChange} value={menu.description} /></li></div>}
+              {/* If we have no children, we need a way to make ourselves an answer */}
+              {menu.children && menu.children.length == 0 && <div className="col-md-3"><button onClick={this.convertToMenu} className="btn btn-primary">make menu</button></div>}
+            </div>
+            {/* No matter what, just render all children. */}
             {menu.children &&
               menu.children.map(function(menuItem, idx) {
                 return <MenuComponent isTopLevel={false} menu={menuItem} callback={handleStateChange}/>
               })
             }
-            <ol>
-            <li style={{"list-style-type": "none"}}><button className="btn btn-primary" onClick={this.handleNewThing}>add new item</button></li>
+            {/* If we have 1 child with a child, we have a submenu! */}
+            {menu.children && menu.children[0] && menu.children[0].children[0] && <ol>
+            <li style={{"list-style-type": "none"}}><button className="btn btn-primary" onClick={this.handleCreateNewChildMenu}>+ menu item</button></li>
             </ol>
+            }
+
           </ol>
         );
       }
