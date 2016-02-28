@@ -21,14 +21,10 @@
         If you checked out the source from GitHub make sure to run <code>grunt</code>.
       </p>
     </div>
-    <h4>Example Details</h4>
-    <p>This is written in vanilla JavaScript (without JSX) and transformed in the browser.</p>
-    <p>
-      Learn more about React at
-      <a href="https://facebook.github.io/react" target="_blank">facebook.github.io/react</a>.
-    </p>
     <script type='text/babel'>
 
+    // Initial state populated by props, and then props are never used again.
+    // Pass back your state to your parent.
     var MenuComponent = React.createClass({
 
       componentWillMount: function() {
@@ -36,16 +32,18 @@
       },
 
       handleChange: function(event) {
-        console.log(this.state.menu)
         const updatedMenu = Object.assign(this.state.menu)
         updatedMenu.description = event.target.value
+        // Let our parent know that we are updated. Then, update our own state.
+        // TODO(parth): can we actually flip these?
         this.state.callback(updatedMenu)
         this.setState({menu: updatedMenu})
       },
 
       handleStateChange: function(newChildMenu) {
-        console.log(this.state)
         const currentMenuChildren = this.state.menu.children
+
+        // Look for the menu in the list, and then update or add if necessary.
         const idx = currentMenuChildren.find(function(elem) {
           return elem.id == newChildMenu.id
         })
@@ -65,7 +63,7 @@
       },
 
       render: function() {
-        // only use state! never use props again.
+        // Only use state! Never use props again.
         var menu = this.state.menu;
         var stack = this.state.stack;
         var handleStateChange = this.handleStateChange;
