@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
     <!-- Latest compiled and minified CSS -->
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="static/css/bootstrap.min.css">
@@ -35,7 +37,6 @@
           <ul class="nav nav-pills pull-right">
             <li role="presentation" class="active"><a href="#">Home</a></li>
             <li role="presentation"><a href="#">About</a></li>
-            <li role="presentation"><a href="#">Contact</a></li>
           </ul>
         </nav>
         <h3 class="text-muted">Refugee Camp Management</h3>
@@ -43,12 +44,7 @@
 
     <div id="menuadmincontainer">
       <p>
-        To install React, follow the instructions on
-        <a href="https://github.com/facebook/react/">GitHub</a>.
-      </p>
-      <p>
-        If you can see this, React is not working right.
-        If you checked out the source from GitHub make sure to run <code>grunt</code>.
+        If you can see this, something is most definitely broken
       </p>
     </div>
     <script type='text/babel'>
@@ -108,15 +104,18 @@
         var menu = this.state.menu;
         var stack = this.state.stack;
         var handleStateChange = this.handleStateChange;
+        var isTopLevel = this.props.isTopLevel;
         return (
           <ol>
-            <li><input className="form-control" type="text" onChange={this.handleChange} value={menu.description} /></li>
-            <button className="btn btn-primary" onClick={this.handleNewThing}>add new item</button>
+            {!isTopLevel && <li><input className="form-control" type="text" onChange={this.handleChange} value={menu.description} /></li> }
             {menu.children &&
               menu.children.map(function(menuItem, idx) {
-                return <MenuComponent menu={menuItem} callback={handleStateChange}/>
+                return <MenuComponent isTopLevel={false} menu={menuItem} callback={handleStateChange}/>
               })
             }
+            <ol>
+            <li style={{"list-style-type": "none"}}><button className="btn btn-primary" onClick={this.handleNewThing}>add new item</button></li>
+            </ol>
           </ol>
         );
       }
@@ -170,30 +169,16 @@
       },
 
       render: function() {
-        var a = {
-        "description": "Some Meta Text",
-        "children": [
-            {"id": "a", "description": "1. Get info about food.", "children": [{"id": "d", "description": "1. More Food Info"}]},
-            {"id": "b", "description": "2. Get info about housing.", "answer": "Zaatari"},
-            {"id": "c", "description": "3. What's the name of this camp.", "answer": "Zaatari"}]
-        };
-
-        /*
-        return (
-          <div>
-            <MenuComponent menu={a} callback={this.handleSubmit}/>
-            <button onClick={this.handleSubmit}>submit dude</button>
-          </div>
-        );
-        */
         var menu = this.state.menu;
         return (
           <div>
           {
             menu && (
               <div>
-              <MenuComponent menu={menu} callback={this.handleCallback}/>
-              <button className="btn btn-primary" onClick={this.handleSubmit}>submit dude</button>
+                <h1>Menu Administration</h1>
+                <p>Manage the sms menu for your organization</p>
+                <MenuComponent isTopLevel={true} menu={menu} callback={this.handleCallback}/>
+                <button className="btn btn-primary" onClick={this.handleSubmit}>Update Menu</button>
               </div>
             )
           }
