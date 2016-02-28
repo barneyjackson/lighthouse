@@ -10,13 +10,6 @@ class Menu():
 	errors = []
 	if not self.content.get('children'):
 	    return False, ["You're menu must have something in it!"]
-    	'''
-	for menu_item in self.content['children']:
-	    item_valid, item_errors = _validate_menu_item(menu_item)
-	    if not item_valid:
-		valid = item_valid
-		errors.extend(item_errors)
-	'''
 	valid, errors = _validate_menu_item(self.content, is_root=True)
 	return valid, errors
 
