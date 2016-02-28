@@ -7,21 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/css/style.css">
 
     <!-- jQuery + bootstrap-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="static/js/jquery-2.2.1.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
 
     <!-- Babel to transpile js on the browser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
 
     <!-- React Things-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
-    <!-- <script src="build/react.js"></script> -->
-    <!-- <script src="build/react-dom.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script> -->
+    <script src="static/js/react.js"></script>
+    <script src="static/js/react-dom.js"></script>
 
     <title>Menu Administration</title>
   </head>
@@ -89,6 +92,17 @@
         this.state.callback(this.state.menu)
       },
 
+      handleNewThing: function() {
+        const currentMenuChildren = this.state.menu.children
+        const updatedMenu = Object.assign(this.state.menu)
+        // TODO(parth): need children:[] or no
+        currentMenuChildren.push({"description": "Default Description"})
+        updatedMenu.children = currentMenuChildren
+        // update our menu, then update our parents
+        this.setState({menu: updatedMenu})
+        this.state.callback(this.state.menu)
+      },
+
       render: function() {
         // Only use state! Never use props again.
         var menu = this.state.menu;
@@ -97,6 +111,7 @@
         return (
           <ol>
             <li><input className="form-control" type="text" onChange={this.handleChange} value={menu.description} /></li>
+            <button className="btn btn-primary" onClick={this.handleNewThing}>add new item</button>
             {menu.children &&
               menu.children.map(function(menuItem, idx) {
                 return <MenuComponent menu={menuItem} callback={handleStateChange}/>
@@ -159,7 +174,7 @@
             menu && (
               <div>
               <MenuComponent menu={menu} callback={this.handleSubmit}/>
-              <button className="btn btn-default" onClick={this.handleSubmit}>submit dude</button>
+              <button className="btn btn-primary" onClick={this.handleSubmit}>submit dude</button>
               </div>
             )
           }
