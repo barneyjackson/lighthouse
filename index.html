@@ -18,7 +18,8 @@
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
 
     <!-- Babel to transpile js on the browser -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>-->
+    <script src="static/js/browser.min.js"></script>
 
     <!-- React Things-->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script> -->
@@ -150,6 +151,9 @@
         this.setState({menu: updatedMenu})
       },
 
+      displaySuccess: function() {},
+      displayError: function(errors) {},
+
       handleSubmit: function(updatedMenu) {
         console.log("doing put request: ")
         console.log(this.state.menu)
@@ -161,7 +165,13 @@
           data: JSON.stringify(this.state.menu),
           //data: this.state.menu,
           success: function(data) {
-            console.log("success");
+            console.log("POST success");
+            if (data.success) {
+              displaySuccess()
+            }
+            if (data.error) {
+              displayError(data.error)
+            }
           }.bind(this),
           error: function(xhr, status, err) {
             console.log("error!")
