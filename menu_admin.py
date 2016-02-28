@@ -90,14 +90,19 @@ def hello_world():
 
   if request.method == "GET":
     menu = db['1']
-    print menu.content
     return json.dumps(menu.content)
   elif request.method == "PUT":
     # todo(parth): validation
-    print type(request.data)
-    print type(request.json)
-    db['1'] = Menu(request.json)
-    return "success"
+    menu = Menu(request.json)
+    valid, errors = menu.validate()
+    if valid:
+        print 'VALID'
+	db['1'] = menu
+	resp = {"success": ":D"}
+    else:
+        print 'INVALID'
+	resp = {"error": errors}
+    return json.dumps(resp)
 
 @app.route('/', methods=["GET"])
 def serve_index():
