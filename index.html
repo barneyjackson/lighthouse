@@ -30,7 +30,7 @@
     <script src="static/js/react.js"></script>
     <script src="static/js/react-dom.js"></script>
 
-    <title>Menu Administration</title>
+    <title>Lighthouse</title>
   </head>
   <body>
     <div class="container">
@@ -41,7 +41,7 @@
             <li role="presentation"><a href="#">About</a></li>
           </ul>
         </nav>
-        <h3 class="text-muted">Refugee Camp Management</h3>
+        <h3 class="text-muted">Lighthouse - Refugee Information via SMS</h3>
       </div>
 
     <div id="menuadmincontainer">
@@ -115,8 +115,9 @@
         const currentMenuChildren = this.state.menu.children
         const updatedMenu = Object.assign(this.state.menu)
         // TODO(parth): need children:[] or no
-        currentMenuChildren.push({"id": this.uniqueId(), "description": "Answer", "children": []})
+        currentMenuChildren.push({"id": this.uniqueId(), "description": "Menu Item 1", "children": []})
         updatedMenu.children = currentMenuChildren
+        updatedMenu.description = "Menu Item 1"
         // update our menu, then update our parents
         this.setState({menu: updatedMenu})
         this.state.callback(this.state.menu)
@@ -137,22 +138,26 @@
           <ol>
             {/* If we're not the top-most, then render the description. (hack since top-level one is not that great.) */}
             <div className="row">
+              <div className="col-md-1">
+                {!isTopLevel && menu.children && menu.children.length > 0 && <div className="row up-row pull-right"><i className="fa fa-angle-up"></i></div>}
+                {!isTopLevel && menu.children && menu.children.length > 0 && <div className="row down-row pull-right"><i className="fa fa-angle-down"></i></div>}
+              </div>
               { !isTopLevel && <div className="col-md-10"><li><input required={true} errorMessage="Description cannot be empty. " className="form-control" type="text" onChange={this.handleChange} value={menu.description} /></li></div>}
               {/* So long as we are not an answer, we can be deleted */}
-              {menu.children && menu.children.length == 1 && <div className="col-md-1"><button onClick={this.convertToMenu} className="btn btn-primary"><i className="fa fa-trash"></i></button></div>}
+              {menu.children && menu.children.length == 1 && <div className="col-md-1"><button onClick={this.convertToMenu} className="btn btn-danger"><i className="fa fa-trash"></i></button></div>}
               {/* If we are an answer */}
-              {menu.children && menu.children.length == 0 && <div className="col-md-1"><button onClick={this.convertToMenu} className="btn btn-primary">convert to menu</button></div>}
+              {menu.children && menu.children.length == 0 && <div className="col-md-1"><button onClick={this.convertToMenu} className="btn btn-primary"><i className="fa fa-plus-square"></i> add subitem</button></div>}
             </div>
-            {/* If we have 1 child with a child, we have a submenu! */}
-            {!isTopLevel && menu.children && menu.children[0] && menu.children[0].children[0] && <ol>
-            <li><button className="btn btn-primary" onClick={this.handleCreateNewChildMenu}><i className="fa fa-plus-square"></i></button></li>
-            </ol>
-            }
             {/* No matter what, just render all children. */}
             {menu.children &&
               menu.children.map(function(menuItem, idx) {
                 return <MenuComponent isTopLevel={false} menu={menuItem} callback={handleStateChange}/>
               })
+            }
+            {/* If we have 1 child with a child, we have a submenu! */}
+            {menu.children && menu.children[0] && menu.children[0].children[0] && <ol>
+            <li><button className="btn btn-primary add-square-button" onClick={this.handleCreateNewChildMenu}><i className="fa fa-plus-square"></i> new menu option</button></li>
+            </ol>
             }
 
           </ol>
@@ -169,7 +174,7 @@
 
       componentDidMount: function() {
         $.ajax({
-          url: "http://localhost:5000/menu",
+          url: "/menu",
           dataType: 'json',
           cache: false,
           success: function(data) {
@@ -192,7 +197,7 @@
         console.log("doing put request: ")
         console.log(this.state.menu)
         $.ajax({
-          url: 'http://localhost:5000/menu',
+          url: '/menu',
           contentType: "application/json; charset=utf-8",
           type: 'PUT',
           dataType: 'json',
@@ -221,14 +226,16 @@
           {
             menu && (
               <div>
-                <h1>Menu Administration</h1>
-                <p>Manage the sms menu for your organization</p>
+                <h1>SMS Script Editor</h1>
+                <p>Manage your sms script.</p>
                 {this.state.isSuccess &&
                   <div id="success" className="alert alert-success .alert-dismissible" role="alert">
                     <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>Success!</div>}
                 {this.state.isFailure &&
                   <div id="error" className="alert alert-danger alert-dismissible" role="alert"><button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{this.state.errors}</div>}
+                <div id="wrapper" style={{"margin-left": "-90px"}}>
                 <MenuComponent isTopLevel={true} menu={menu} callback={this.handleCallback}/>
+                </div>
                 <button className="btn btn-primary" onClick={this.handleSubmit}>Update Menu</button>
               </div>
             )

@@ -1,5 +1,6 @@
 # virtualenv things
 bin/
+build/
 lib/
 include/
 pip-selfcheck.json

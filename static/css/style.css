@@ -18,6 +18,22 @@ body {
   padding-bottom: 5px;
 }
 
+.up-row {
+  margin-top: -5px;
+}
+
+#wrapper {
+  margin-left: 90px;
+}
+
+.down-row {
+  margin-top: 7px;
+}
+
+.add-square-button {
+  margin-left: 55px;
+}
+
 li {
   list-style-type: none;
 }

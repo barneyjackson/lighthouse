@@ -1,16 +1,15 @@
-from flask import Flask
-from flask import request, send_from_directory
-from flask import render_template
+from flask import Flask, request, redirect, send_from_directory, render_template
 from flask.ext import shelve
+import twilio.twiml
 from menu import Menu
-
 import json
 
 app = Flask(__name__)
 app.config['SHELVE_FILENAME'] = 'shelve.db'
 shelve.init_app(app)
 
-initial_script = {
+users = {}
+script = {
   "id": "b3db002c",
   "description": "",
   "children": [
@@ -100,8 +99,56 @@ initial_script = {
   ]
 }
 
+@app.route("/", methods=['GET', 'POST'])
+def twilio_route():
+  db = shelve.get_shelve()
+  from_number = request.values.get('From', None)[1:]
+  from_message = request.values.get('Body', None)
+
+  if(from_number in users):
+    try:
+      int(from_message)
+    except:
+      resp = twilio.twiml.Response()
+      resp.message("You must enter a valid option or 0 to start again!")
+      return str(resp)
+    else:
+      if int(from_message) == 0:
+        del users[from_number]
+        compressed_path = ""
+        users[from_number] = compressed_path
+      else:
+        compressed_path = users[from_number]
+        path_message = int(from_message) - 1
+        compressed_path = str(compressed_path) + str(path_message)
+        users[from_number] = compressed_path
+  else:
+    compressed_path = ""
+    users[from_number] = compressed_path
+
+  uncompressed_path = list(compressed_path)
+
+  menu = db['1'].content
+  node = menu["children"]
+  for index in uncompressed_path:
+    node = node[int(index)]["children"]
+
+  if len(node) == 1 and not node[0]['children']:
+    message = node[0]['description']
+    del users[from_number]
+  else:
+    message = "Please select an option.\n"
+    for index, child in enumerate(node):
+      message = message + str(index + 1) + " - " + child["description"] + "\n"
+    message = message + '\n0 - Start Again'
+
+  resp = twilio.twiml.Response()
+  resp.message(message)
+
+  return str(resp)
+
 @app.route('/menu', methods=["GET", "PUT"])
-def hello_world():
+def menu_route():
   db = shelve.get_shelve()
 
   if request.method == "GET":
@@ -112,24 +159,24 @@ def hello_world():
     menu = Menu(request.json)
     valid, errors = menu.validate()
     if valid:
-        print 'VALID'
-	db['1'] = menu
-	resp = {"success": ":D"}
+      print 'VALID'
+      db['1'] = menu
+      resp = {"success": ":D"}
     else:
-        print 'INVALID'
-	resp = {"error": errors}
+      print 'INVALID'
+      resp = {"error": errors}
     return json.dumps(resp)
 
-@app.route('/', methods=["GET"])
-def serve_index():
-  valid, errors = Menu(initial_script).validate()
+@app.route('/admin', methods=["GET"])
+def admin_route():
   db = shelve.get_shelve()
-  if valid:
-      #db['1'] = Menu(initial_script)
-      return send_from_directory('.', 'index.html')
-  else:
-    raise Exception("test data not valid")
+  return send_from_directory('.', 'index.html')
 
+@app.route('/init', methods=["GET"])
+def init_route():
+  db = shelve.get_shelve()
+  db['1'] = Menu(script)
+  return "success"
 
-if __name__ == '__main__':
-  app.run(debug=True)
+if __name__ == "__main__":
+  app.run(debug=True, host='0.0.0.0', port=5001)
