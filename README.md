@@ -9,7 +9,7 @@ For more info, check out the pitch: [https://docs.google.com/presentation/d/1Vks
 
 ## Background
 
-Lighthouse was developed by a team participating in the Feb 26-28th 2016 _[Hacktivation](https://www.facebook.com/Hacktivation-1633013560295660)_ retreat for the refugee crisis. Contact [@barneyjackson](http://www.twitter.com/barneyjackson) for more info.
+Lighthouse was developed by Ali, Arezu, Ayelette, Barney, Kat & Parth as a team participating in the Feb 26-28th 2016 _[Hacktivation](https://www.facebook.com/Hacktivation-1633013560295660)_ retreat for the refugee crisis. The project was selected by a panel of judges ([Katharina Borchert, Yobie Benjamin, Brian Behlendorf, Brian Reich](https://scontent.fsnc1-1.fna.fbcdn.net/hphotos-xal1/v/t1.0-9/3054_871805434086_7832530171226096124_n.jpg?oh=f688f1e59b58d2ebd9130a4e66802265&oe=5752DA22)) as the "winner". Contact [@barneyjackson](http://www.twitter.com/barneyjackson) for more info.
 
 ## Going forward
 
