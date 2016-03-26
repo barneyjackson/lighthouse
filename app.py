@@ -99,7 +99,17 @@ script = {
   ]
 }
 
-@app.route("/", methods=['GET', 'POST'])
+
+@app.route("/favicon.ico")
+def favicon():
+  return send_from_directory('static/img', 'favicon.ico')
+
+@app.route("/")
+@app.route("/about")
+def about():
+  return send_from_directory('static', 'about.html')
+
+@app.route("/sms", methods=['GET', 'POST'])
 def twilio_route():
   db = shelve.get_shelve()
   from_number = request.values.get('From', None)[1:]
@@ -155,7 +165,6 @@ def menu_route():
     menu = db['1']
     return json.dumps(menu.content)
   elif request.method == "PUT":
-    # todo(parth): validation
     menu = Menu(request.json)
     valid, errors = menu.validate()
     if valid:
@@ -169,8 +178,9 @@ def menu_route():
 
 @app.route('/admin', methods=["GET"])
 def admin_route():
+  print "IN admin"
   db = shelve.get_shelve()
-  return send_from_directory('.', 'index.html')
+  return send_from_directory('static/', 'index.html')
 
 @app.route('/init', methods=["GET"])
 def init_route():
